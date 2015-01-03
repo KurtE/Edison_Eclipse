@@ -40,4 +40,18 @@ $RECYCLE.BIN/
 .AppleDesktop
 Network Trash Folder
 Temporary Items
+
+# Stuff I added directly in here
 .apdisk
+*.o
+*.d
+*.bak
+*.a
+
+TFTBacklight/Debug/TFTBacklight
+TestScrollText/Debug/TestScrollText
+Phantom_Phoenix_fixed/Debug/Phantom_Phoenix_fixed
+Phantom_Phoenix/Debug/Phantom_Phoenix
+.metadata
+Edison_Incs_Libs/include
+Edison_Incs_Libs/lib
