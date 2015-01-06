@@ -213,7 +213,8 @@ void Adafruit_ILI9341::begin(void) {
   }
 
 
-  SPI = mraa_spi_init(1);   // which buss?   will experment here...
+  SPI = mraa_spi_init(0);   // which buss?   Set to 0 to use default...
+  mraa_spi_bit_per_word(SPI, 8);
   mraa_spi_frequency(SPI, SPI_FREQ);
   mraa_spi_lsbmode(SPI, false);  
   mraa_spi_mode(SPI, MRAA_SPI_MODE0);
