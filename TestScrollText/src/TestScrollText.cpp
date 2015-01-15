@@ -9,7 +9,7 @@
 #include <stdarg.h>
 #include <ArduinoDefs.h>
 #include "globals.h"
-#include "display.h"
+#include "tft_display_object.h"
 
 extern void setup(void);
 extern void loop(void);

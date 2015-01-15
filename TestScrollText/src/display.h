@@ -1,5 +1,5 @@
 /*
- * display.h
+ * tft_display_object.h
  *
  *  Created on: Dec 25, 2014
  *      Author: Kurt
@@ -17,7 +17,7 @@
 #include <string>
 
 
-class DISPOBJ {
+class TFTDisplayObject {
 public:
   inline void    Enable(boolean fEnabled);
 
@@ -39,10 +39,10 @@ boolean _fTouchActive :
 //-----------------------------------------------------------------------------
 // Class Button
 //-----------------------------------------------------------------------------
-class BUTTON  :
-public DISPOBJ {
+class TFTButton  :
+public TFTDisplayObject {
 public:
-  BUTTON (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wBtnClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal);
+  TFTButton (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wBtnClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal);
   virtual void draw(void);
   virtual uint16_t processTouch(uint16_t x, uint16_t y);
 
@@ -61,12 +61,12 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// Class TEXT
+// Class TFTText
 //-----------------------------------------------------------------------------
-class TEXT  :
-public DISPOBJ {
+class TFTText  :
+public TFTDisplayObject {
 public:
-  TEXT (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint32_t wClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal);
+  TFTText (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint32_t wClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal);
   virtual void draw(void);
   virtual uint16_t processTouch(uint16_t x, uint16_t y);
 private:
@@ -83,7 +83,7 @@ private:
 // Class SCROLLTEXT
 //-----------------------------------------------------------------------------
 class SCROLLTEXT  :
-public DISPOBJ {
+public TFTDisplayObject {
 public:
   SCROLLTEXT (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint32_t wClr, uint16_t wTextClr, uint32_t wOutlineClr);
   virtual void draw(void);
@@ -98,12 +98,12 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// class SLIDER
+// class TFTSlider
 //-----------------------------------------------------------------------------
-class SLIDER  :
-public DISPOBJ {
+class TFTSlider  :
+public TFTDisplayObject {
 public:
-  SLIDER (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wClr, uint16_t wHiClr, uint16_t wBackClr, uint16_t wMin, uint16_t wMax, uint16_t wVal);
+  TFTSlider (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wClr, uint16_t wHiClr, uint16_t wBackClr, uint16_t wMin, uint16_t wMax, uint16_t wVal);
   virtual void draw(void);
   virtual uint16_t processTouch(uint16_t x, uint16_t y);
 
@@ -117,8 +117,8 @@ public:
     _fPressed = fPressed;
   };
 private:
-  inline void MapValToDispVal(void);
-  inline uint16_t MapDispValToVal(uint16_t wXorY);
+  inline void mapValueToDisplayValue(void);
+  inline uint16_t mapDisplayValueToValue(uint16_t wXorY);
 
   uint16_t _wClr;
   uint16_t _wHiClr;

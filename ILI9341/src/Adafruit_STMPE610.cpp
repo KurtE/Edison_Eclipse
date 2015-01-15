@@ -43,7 +43,7 @@ Adafruit_STMPE610::Adafruit_STMPE610(uint8_t cspin) {
 /**************************************************************************/
 boolean Adafruit_STMPE610::begin() {
     // hardware SPI
-    InitTransction();
+	InitTransaction();
 
     _gpioCS = mraa_gpio_init(_cs);
     mraa_gpio_dir(_gpioCS, MRAA_GPIO_OUT);

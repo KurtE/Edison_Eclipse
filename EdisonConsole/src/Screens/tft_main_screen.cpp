@@ -22,7 +22,7 @@
 //=============================================================================
 
 #include "globals.h"
-#include "screens.h"
+#include "tft_screen.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,10 +40,10 @@
 // Class definition
 //=============================================================================
 
-class MainScreen : public SCREEN {
+class TFTMainScreen : public TFTScreen {
 public:
-	MainScreen(uint16_t wClr, DISPOBJ **ppdisp, uint8_t cdisp, SCREEN* pscreenNext, SCREEN* pscreenPrev) :
-		SCREEN(wClr, ppdisp, cdisp, pscreenNext, pscreenPrev) {};
+	TFTMainScreen(uint16_t wClr, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen* pscreenNext, TFTScreen* pscreenPrev) :
+		TFTScreen(wClr, ppdisp, cdisp, pscreenNext, pscreenPrev) {};
 
 	  virtual uint16_t processTouch(uint16_t x, uint16_t y);
 };
@@ -54,25 +54,25 @@ public:
 #define CMD_SHUTDOWN 100
 #define CMD_PHOENIXFIXED 101
 #define CMD_PHOENIXFLOAT 102
-static BUTTON _btnshutdown(10, 50, 250, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Shutdown", CMD_SHUTDOWN);
-static BUTTON _btnphoenixfixed(10, 100, 250, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Phoenix fixed", CMD_PHOENIXFIXED);
-static BUTTON _btnphoenixfloat(10, 150, 250, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Hello World", CMD_PHOENIXFLOAT);
+static TFTButton _btnshutdown(10, 50, 250, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Shutdown", CMD_SHUTDOWN);
+static TFTButton _btnphoenixfixed(10, 100, 250, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Phoenix fixed", CMD_PHOENIXFIXED);
+static TFTButton _btnphoenixfloat(10, 150, 250, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Hello World", CMD_PHOENIXFLOAT);
 
 
-DISPOBJ *_mainscreenobjs[] = {&g_btnup,&g_btndn,
+TFTDisplayObject *_mainscreenobjs[] = {&g_btnup,&g_btndn,
 		&_btnshutdown, &_btnphoenixfixed, &_btnphoenixfloat,
 		&g_txtTitle};
 
-MainScreen mainscreen(ILI9341_BLACK, _mainscreenobjs, sizeof(_mainscreenobjs)/sizeof(_mainscreenobjs[0]),
-		(SCREEN*)&runscreen, (SCREEN*)&hexscreen);
+TFTMainScreen g_main_screen(ILI9341_BLACK, _mainscreenobjs, sizeof(_mainscreenobjs)/sizeof(_mainscreenobjs[0]),
+		(TFTScreen*)&g_run_screen, (TFTScreen*)&g_hex_screen);
 
 
 //=============================================================================
 // Process Touch
 //=============================================================================
-uint16_t MainScreen::processTouch(uint16_t x, uint16_t y)
+uint16_t TFTMainScreen::processTouch(uint16_t x, uint16_t y)
 {
-	uint16_t wTouch = SCREEN::processTouch(x, y);
+	uint16_t wTouch = TFTScreen::processTouch(x, y);
 	if (wTouch != 0xffff) {
 		switch (wTouch) {
 		case CMD_SHUTDOWN:

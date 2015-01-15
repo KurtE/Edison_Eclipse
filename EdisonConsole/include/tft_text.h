@@ -2,7 +2,10 @@
 //Project Linux Eclipse projects
 //Description: Phoenix software
 //
-//  This code is free software; you can redistribute it and/or
+//
+// Arduino(ish) defines to get the Phoenix software to run on  Linux
+//
+//  This library is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU Lesser General Public
 //  License as published by the Free Software Foundation; either
 //  version 2.1 of the License, or (at your option) any later version.
@@ -19,25 +22,35 @@
 //=============================================================================
 
 //=============================================================================
-// Simple Transaction calls for both the ILI9341 and the STMPE610 to fix
-// issues associated with calling them from multiple threads.
+// Simple  text box
 //=============================================================================
+#ifndef TFT_TEXT_OBJECT_H_
+#define TFT_TEXT_OBJECT_H_
+#include "tft_display_object.h"
 
-#ifndef SIMPLETRANSACTION_H_
-#define SIMPLETRANSACTION_H_
-#include <pthread.h>
+//-----------------------------------------------------------------------------
+// Class TFTText
+//-----------------------------------------------------------------------------
+class TFTText  :
+public TFTDisplayObject {
+public:
+  TFTText (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint32_t wClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal);
+  virtual void draw(void);
+  virtual uint16_t processTouch(uint16_t x, uint16_t y);
+private:
+  uint32_t _wClr;
+  uint16_t _wHiClr;
+  uint16_t _wTextClr;
+  std::string _str;
+  uint16_t  _wVal;
 
-extern pthread_mutex_t g_lockSPI;
-void inline BeginTranscation() {
-	pthread_mutex_lock(&g_lockSPI);
+  //        bool _fPressed;
+};
 
-}
-void inline EndTransaction() {
-	pthread_mutex_unlock(&g_lockSPI);
-}
 
-// Simple functions to initialize the mutex and destroy it at the end if last usage of it.
-extern void InitTransaction();
-extern void DestroyTransaction();
 
-#endif /* SIMPLETRANSACTION_H_ */
+
+
+
+
+#endif /* TFT_TEXT_OBJECT_H_ */

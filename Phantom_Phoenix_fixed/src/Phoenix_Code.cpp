@@ -31,6 +31,8 @@
 #include "Phoenix.h"
 #include <signal.h>
 #include <math.h>
+#include <stdio_ext.h>
+
 
 #ifdef OPT_ESPEAK
 #include "speak.h"
@@ -631,7 +633,7 @@ void setup()
 #ifdef DBGSerial
     DBGSerial.begin();                            // Special version for stdin/stdout
 #endif
-
+    printf("%d %d %d\n", __flbf(stdout), __fbufsize(stdout), __flbf(stdin));
     InitVoice();                                 // Lets try to initialize voices if needed.
 
     // Init our ServoDriver

@@ -22,35 +22,42 @@
 // Definitions for the different screen used in the Console application
 //=============================================================================
 
-#ifndef SCREENS_H_
-#define SCREENS_H_
-#include "display.h"
-
+#ifndef TFT_SCREEN_H_
+#define TFT_SCREEN_H_
+#include "tft_display_object.h"
+#include "tft_text_box.h"
+#include "tft_button.h"
+#include "tft_text.h"
 
 //-----------------------------------------------------------------------------
 // Class Screen
 //-----------------------------------------------------------------------------
-class SCREEN :
-public DISPOBJ {
+class TFTScreen :
+public TFTDisplayObject {
 public:
-	SCREEN(uint16_t wClr, DISPOBJ **ppdisp, uint8_t cdisp, SCREEN *pscreenNext, SCREEN *pscreenPrev);
+	TFTScreen(uint16_t wClr, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen *pscreenNext, TFTScreen *pscreenPrev);
 	  virtual void draw(void);
 	  virtual uint16_t processTouch(uint16_t x, uint16_t y);
+	  virtual void setVisible(bool fVisible);
 	  virtual uint16_t idleTime(void);				// Call when nothing touched to allow background stuff to happen...
 
+static void setCurrentScreen(TFTScreen* pscreen);
+static inline TFTScreen* curScreen(void) {return _pScreenCur;};
 protected:
   uint16_t _wClr;
-  DISPOBJ **_ppdisp;
+  TFTDisplayObject **_ppdisp;
   uint8_t _cdisp;			// count of display objects
-  SCREEN  *_pscreenNext;	// Next Screen
-  SCREEN  *_pscreenPrev;	// Previous screen
+  TFTScreen  *_pscreenNext;	// Next Screen
+  TFTScreen  *_pscreenPrev;	// Previous screen
+
+static TFTScreen *_pScreenCur; // Our current Screen;
 };
 
 
 // Define our Screens.
-extern SCREEN *g_pscreenCur;
+extern TFTScreen *g_pscreenCur;
 void InitScreens(void);
-boolean GetTouchPoint(uint16_t *pwX, uint16_t *pwY);
+bool GetTouchPoint(uint16_t *pwX, uint16_t *pwY);
 #define CMD_OK	 200
 #define CMD_PREV 204
 #define CMD_NEXT 205
@@ -70,20 +77,20 @@ boolean GetTouchPoint(uint16_t *pwX, uint16_t *pwY);
 
 
 // Define the standard buttons...
-extern BUTTON g_btnup;
-extern BUTTON g_btndn;
-extern BUTTON g_btnok;
-extern TEXT g_txtTitle;
+extern TFTButton g_btnup;
+extern TFTButton g_btndn;
+extern TFTButton g_btnok;
+extern TFTText g_txtTitle;
 
 // Not sure the best way to setup forward references...
-class RunScreen;
-class HexScreen;
-class MainScreen;
+class TFTRunScreen;
+class TFTHexScreen;
+class TFTMainScreen;
 
-extern HexScreen hexscreen;
-extern MainScreen mainscreen;
-extern RunScreen runscreen;
+extern TFTHexScreen g_hex_screen;
+extern TFTMainScreen g_main_screen;
+extern TFTRunScreen g_run_screen;
 
 extern void LaunchProgram(std::string strCmd);
 
-#endif /* SCREENS_H_ */
+#endif /* TFT_SCREEN_H_ */

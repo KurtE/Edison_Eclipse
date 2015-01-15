@@ -203,7 +203,7 @@ void Adafruit_ILI9341::commandList(uint8_t *addr) {
 
 void Adafruit_ILI9341::begin(void) {
   mraa_gpio_context gpioRST = NULL;
-  InitTransction();
+  InitTransaction();
   if (_rst > 0) 
     gpioRST = mraa_gpio_init(_rst);
 
@@ -612,30 +612,16 @@ void Adafruit_ILI9341::readRect(int16_t x, int16_t y, int16_t w, int16_t h, uint
     uint8_t txdata[X86_BUFFSIZE * 3];   // how many to read at a time
     memset(txdata, 0, X86_BUFFSIZE * 3);
 
-#ifdef MRAA_SPI_TRANSFER_BUF
     uint8_t rxdata[X86_BUFFSIZE * 3];   // how many to read at a time
-#else
-    uint8_t *prxData;
-#endif    
    	rxdata [0]= spiread();	        // Read a DUMMY byte of GRAM
 
 
     while (c){
         uint16_t cRead = min (c, X86_BUFFSIZE);
-#ifdef MRAA_SPI_TRANSFER_BUF
         mraa_spi_transfer_buf(SPI, txdata, rxdata, cRead * 3);
         for (uint16_t i=0; i < cRead*3; i+=3) {
             *pcolors++ = color565(rxdata[i], rxdata[i+1], rxdata[i+2]);
         }
-#else
-        prxData = mraa_spi_write_buf(SPI, txdata, cRead * 3);
-        if (prxData) {
-            for (uint16_t i=0; i < cRead*3; i+=3) {
-                *pcolors++ = color565(prxData[i], prxData[i+1], prxData[i+2]);
-            }
-            free (prxData);
-        }
-#endif
         c -= cRead;
     }
    CSHigh();

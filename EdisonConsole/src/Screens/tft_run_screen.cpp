@@ -23,7 +23,9 @@
 //=============================================================================
 
 #include "globals.h"
-#include "screens.h"
+#include "tft_screen.h"
+#include "tft_text_box.h"
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,10 +46,10 @@
 //=============================================================================
 #define TRYPOPEN2
 
-class RunScreen : public SCREEN {
+class TFTRunScreen : public TFTScreen {
 public:
-	RunScreen(uint16_t wClr, DISPOBJ **ppdisp, uint8_t cdisp, SCREEN* pscreenNext, SCREEN* pscreenPrev) :
-		SCREEN(wClr, ppdisp, cdisp, pscreenNext, pscreenPrev) {
+	TFTRunScreen(uint16_t wClr, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen* pscreenNext, TFTScreen* pscreenPrev) :
+		TFTScreen(wClr, ppdisp, cdisp, pscreenNext, pscreenPrev) {
 #ifdef TRYPOPEN2
 			_toProcessfp=0; _fromProcessfp = 0; _tid = 0;
 #else
@@ -80,29 +82,29 @@ public:
 //=============================================================================
 #define CMD_CLOSE 103
 
-static BUTTON _btnClose(10, 50, 100, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Close", CMD_CLOSE);
- SCROLLTEXT txtMsgs(10, 100, 250, 132, ILI9341_BLACK, ILI9341_WHITE, ILI9341_GREEN);
+static TFTButton _btnClose(10, 50, 100, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Close", CMD_CLOSE);
+ TFTTextBox txtMsgs(10, 100, 300, 132, ILI9341_BLACK, ILI9341_WHITE, ILI9341_GREEN);
 
-DISPOBJ *_runscreenobjs[] = {&g_btnup,&g_btndn,
+TFTDisplayObject *_runscreenobjs[] = {&g_btnup,&g_btndn,
 		&_btnClose, &txtMsgs, &g_txtTitle};
 
 
 
 
 //=============================================================================
-// Constructor
+// Create our global Object.
 //=============================================================================
-RunScreen runscreen(ILI9341_BLACK, _runscreenobjs, sizeof(_runscreenobjs)/sizeof(_runscreenobjs[0]),
-		(SCREEN*)&hexscreen, (SCREEN*)&mainscreen);
+TFTRunScreen g_run_screen(ILI9341_BLACK, _runscreenobjs, sizeof(_runscreenobjs)/sizeof(_runscreenobjs[0]),
+		(TFTScreen*)&g_hex_screen, (TFTScreen*)&g_main_screen);
 
 
 
 //=============================================================================
 // ProcessTouch
 //=============================================================================
-uint16_t RunScreen::processTouch(uint16_t x, uint16_t y)
+uint16_t TFTRunScreen::processTouch(uint16_t x, uint16_t y)
 {
-	uint16_t wTouch = SCREEN::processTouch(x, y);
+	uint16_t wTouch = TFTScreen::processTouch(x, y);
 	if (wTouch != 0xffff) {
 		switch (wTouch) {
 		case CMD_CLOSE:
@@ -116,7 +118,7 @@ uint16_t RunScreen::processTouch(uint16_t x, uint16_t y)
 //=============================================================================
 // Thread process
 //=============================================================================
-void RunScreen::cancelRunningApp(void) {
+void TFTRunScreen::cancelRunningApp(void) {
 #ifdef TRYPOPEN2
 	if (_pid > 1 ) {
 		// First ask nicely
@@ -151,11 +153,11 @@ void RunScreen::cancelRunningApp(void) {
 //=============================================================================
 // Thread process
 //=============================================================================
-void *RunScreen::ProcessThreadProc(void *pv)
+void *TFTRunScreen::ProcessThreadProc(void *pv)
 {
-	RunScreen *prun = (RunScreen*)pv;
+	TFTRunScreen *prun = (TFTRunScreen*)pv;
 
-	unsigned char pszLine[320/12];
+	char pszLine[320/12];
 	uint8_t iChar=0;
 	uint8_t iMax = (txtMsgs.width() - 4) / 12;				// Think the max number of characters per line
 
@@ -175,7 +177,7 @@ void *RunScreen::ProcessThreadProc(void *pv)
 
     // May want to add end code... But for now don't have any defined...
     sprintf((char*)pszLine, "start: %d", prun->_pid);
-    txtMsgs.AddTextLine(pszLine);
+    txtMsgs.add(pszLine);
     unsigned int ulLastChar = millis();	// know when we last saw something...
     int ret;
     unsigned char ch;
@@ -202,7 +204,7 @@ void *RunScreen::ProcessThreadProc(void *pv)
         		}
 				if ((iChar == iMax) || (ch == '\n')) {
         			pszLine[iChar] = '\0';
-        			txtMsgs.AddTextLine(pszLine);
+        			txtMsgs.add(pszLine);
         			iChar = 0;
 				}
 				ulLastChar = millis();
@@ -228,7 +230,7 @@ void *RunScreen::ProcessThreadProc(void *pv)
     	}
     };
     sprintf((char*)pszLine, "run thread exit");
-    txtMsgs.AddTextLine(pszLine);
+    txtMsgs.add(pszLine);
 #ifdef TRYPOPEN2
     close (prun->_fromProcessfp);
     close (prun->_toProcessfp);
@@ -239,6 +241,8 @@ void *RunScreen::ProcessThreadProc(void *pv)
     prun->_pfile = NULL;
 
 #endif
+    _btnClose.enable(false); 	// disable the close button
+
     printf("Process - thread exit\n");
     prun->_fCancel = true;
     return 0;
@@ -304,7 +308,7 @@ popen2(const char *command, int *stdinfp, int *stdoutfp)
 
 void sigChildHandler(int sig) {
 	// Let the handler know that we have been canceled.
-	runscreen._fSigChild = true;
+	g_run_screen._fSigChild = true;
 }
 
 
@@ -313,8 +317,7 @@ void sigChildHandler(int sig) {
 //=============================================================================
 void LaunchProgram(std::string strCmd) {
 	// Switch to the run screen
-	g_pscreenCur = &runscreen;
-	g_pscreenCur->draw();	// will draw the fresh screen.
+	TFTScreen::setCurrentScreen(&g_run_screen);
 
 	struct sigaction act;
 	act.sa_handler=sigChildHandler;
@@ -322,22 +325,22 @@ void LaunchProgram(std::string strCmd) {
 
 	// Try to start the command and set the pipe in it.
 #ifdef TRYPOPEN2
-	runscreen._pid  = popen2(strCmd.c_str(), &runscreen._toProcessfp, &runscreen._fromProcessfp);
+	g_run_screen._pid  = popen2(strCmd.c_str(), &g_run_screen._toProcessfp, &g_run_screen._fromProcessfp);
 #else
-	runscreen._pfile = popen((char*)strCmd.c_str(), "r");
+	g_run_screen._pfile = popen((char*)strCmd.c_str(), "r");
 #endif
 	// Then Launch the secondary thread
 
     // Now we need to create our thread for doing the reading from the Xbee
-	runscreen._fCancel = false;
-	runscreen._fSigChild = false;
-	pthread_barrier_init(&runscreen._barrier, 0, 2);
-    int err = pthread_create(&runscreen._tid, NULL, &RunScreen::ProcessThreadProc, g_pscreenCur);
+	g_run_screen._fCancel = false;
+	g_run_screen._fSigChild = false;
+	pthread_barrier_init(&g_run_screen._barrier, 0, 2);
+    int err = pthread_create(&g_run_screen._tid, NULL, &TFTRunScreen::ProcessThreadProc, TFTScreen::curScreen());
     if (err != 0)
         return;
-
+    _btnClose.enable(true); 	// enable the close button
   	// sync startup
-	pthread_barrier_wait(&runscreen._barrier);
+	pthread_barrier_wait(&g_run_screen._barrier);
 
 }
 

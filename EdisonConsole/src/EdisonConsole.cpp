@@ -31,8 +31,8 @@
 #include <stdarg.h>
 #include <ArduinoDefs.h>
 #include "globals.h"
-#include "display.h"
-#include "screens.h"
+#include "tft_display_object.h"
+#include "tft_screen.h"
 
 extern void setup(void);
 extern void loop(void);
@@ -112,7 +112,7 @@ void setup()
 
     // Call the Init screens
     InitScreens();
-    g_pscreenCur->draw();
+    TFTScreen::curScreen()->draw();
 }
 
 
@@ -132,7 +132,7 @@ void loop(void)
     	    ulLastTouch = millis();
     	}
     	// See if current screen wants to do something during idle
-    	uint16_t wDelay = g_pscreenCur->idleTime();
+    	uint16_t wDelay = TFTScreen::curScreen()->idleTime();
     	usleep(wDelay);
 	    return;
     }
@@ -155,12 +155,12 @@ void loop(void)
     GetTouchPoint(&x, &y);
 
     // Call off to current screen to prcess touch event.
-    g_pscreenCur->processTouch(x, y);
+    TFTScreen::curScreen()->processTouch(x, y);
     ulLastTouch = millis();
 }
 
 // Lets try to define a screen of objects
-static TEXT _mst1(0, 0, 100, 16, -1, -1, ILI9341_WHITE, "Kurt's Edison", 0);
-static TEXT _mst2(0, 16, 100, 16, -1, -1, ILI9341_WHITE, "Voltage", 0);
-DISPOBJ *MainScreen[] = {&_mst1, &_mst2};
+static TFTText _mst1(0, 0, 100, 16, -1, -1, ILI9341_WHITE, "Kurt's Edison", 0);
+static TFTText _mst2(0, 16, 100, 16, -1, -1, ILI9341_WHITE, "Voltage", 0);
+TFTDisplayObject *TFTMainScreen[] = {&_mst1, &_mst2};
 

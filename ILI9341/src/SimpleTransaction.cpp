@@ -30,7 +30,7 @@
 pthread_mutex_t g_lockSPI;
 static uint8_t g_bInitCalls = 0;
 
-void InitTransction() {
+void InitTransaction() {
 	g_bInitCalls++;
 	if (g_bInitCalls == 1)
 		pthread_mutex_init(&g_lockSPI, NULL);
