@@ -23,6 +23,7 @@
 
 #include "globals.h"
 #include "tft_button.h"
+#include "tft_screen.h"
 #include <string.h>
 
 //=============================================================================
@@ -33,22 +34,22 @@
 //=============================================================================================================
 //  Display Object: Button
 //=============================================================================================================
-TFTButton::TFTButton(uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wBtnClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal, bool fEnabled)  {
+TFTButton::TFTButton(uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wBtnClr, uint16_t wHiClr, uint16_t color_text, std::string str, uint16_t wVal, bool fEnabled)  {
   // Save away all of the data...
   // first the base objects stuff...
   _x = x;
   _w =dx;
   _y = y;
   _h = dy;
-  _fEnabled = fEnabled;        // default to enabled...
-  _fVisible = false;
+  control_enabled_ = fEnabled;        // default to enabled...
+  control_visible_ = false;
 
   _wBtnClr = wBtnClr;
   _wHiClr = wHiClr;
-  _wTextClr = wTextClr;
+  color_text_ = color_text;
   _str = str;
   _wVal = wVal;
-  _fPressed = false;
+  control_logically_pressed_ = false;
 }
 
 //=============================================================================================================
@@ -57,20 +58,20 @@ TFTButton::TFTButton(uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t 
 
 void TFTButton::draw() {
 
-	if (!_fVisible)
+	if (!control_visible_)
 		return;	// don't draw if it is not currently displayed.
 
     // BUGBUG:: Hard coded font size... 10x16
     uint16_t wXText = _x + _w/2 - _str.size()*10/2;  // Could precalc and save also verify that text fits...
     uint16_t wYText = _y + _h/2 - 16/2;
 
-   // printf("%d %d %d BTN %s\n", _x, _y, _fPressed, _str.c_str());
-    if (_fPressed) {
+   // printf("%d %d %d BTN %s\n", _x, _y, control_logically_pressed_, _str.c_str());
+    if (control_logically_pressed_) {
         tft.fillRect(_x, _y, _w, _h, _wHiClr);
         tft.drawRect(_x+2, _y+2, _w-4, _h-4, _wBtnClr);
 
         // Now output graphic text...
-        DisplayGraphicString(wXText, wYText , 3, _wTextClr, -1,  _str.c_str());
+        DisplayGraphicString(wXText, wYText , 3, color_text_, -1,  _str.c_str());
 
   }
   else {
@@ -78,8 +79,8 @@ void TFTButton::draw() {
         tft.drawRect(_x+2, _y+2, _w-4, _h-4, _wHiClr);
 
         // Now output graphic text...
-        if (_fEnabled)
-        	DisplayGraphicString(wXText, wYText , 3, _wTextClr, -1, _str.c_str());
+        if (control_enabled_)
+        	DisplayGraphicString(wXText, wYText , 3, color_text_, -1, _str.c_str());
         else
         	DisplayGraphicString(wXText, wYText , 3, tft.color565(0x80, 0x80, 0x80), -1, _str.c_str());  // BUGBUG hard coded...
     }
@@ -90,9 +91,9 @@ void TFTButton::draw() {
 // TFTTextBox:: enable
 //=============================================================================================================
 void TFTButton::enable(bool fEnabled) {
-	_fEnabled = fEnabled;
+	control_enabled_ = fEnabled;
 
-	if (_fVisible)
+	if (control_visible_)
 		draw();	// update the display
 }
 
@@ -106,7 +107,7 @@ void TFTButton::enable(bool fEnabled) {
 uint16_t TFTButton::processTouch(uint16_t x, uint16_t y) {
 
 
-    if (!_fVisible || !_fEnabled || !((x >= _x) && (x <= (_x+_w)) && (y >= _y) && (y <= (_y+_h))))
+    if (!control_visible_ || !control_enabled_ || !((x >= _x) && (x <= (_x+_w)) && (y >= _y) && (y <= (_y+_h))))
         return 0xffff;        // Special value that says Not within the object...
 
     SetPressed(true);
@@ -114,7 +115,7 @@ uint16_t TFTButton::processTouch(uint16_t x, uint16_t y) {
 
     // Now lets wait for the touch to release...
     while (ts.touched()) {
-        GetTouchPoint(&x, &y);
+        TFTScreen::getTouchPoint(&x, &y);
     }
 
     SetPressed(false);

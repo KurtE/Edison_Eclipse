@@ -30,7 +30,7 @@
 //  Main display object implementation.
 //=============================================================================================================
 void  TFTDisplayObject::enable(bool fEnabled)  {
-	_fEnabled = fEnabled;
+	control_enabled_ = fEnabled;
 }
 
 
@@ -50,19 +50,6 @@ void DisplayGraphicString(word x, word y, byte bFont, word wColor, uint32_t ulBG
     tft.setTextColor(wColor);
 
   tft.print(pb);
-}
-
-//=============================================================================
-// GetTouchPoint - Get the touch status associated with our display
-//=============================================================================
-bool GetTouchPoint(uint16_t *pwX, uint16_t *pwY)
-{
-   TS_Point p = ts.getPoint();
-
-  // Scale from ~0->4000 to tft.width using the calibration #'s
-  *pwX = map(p.y, TS_MINX, TS_MAXX, tft.width(), 0);
-  *pwY = map(p.x, TS_MINY, TS_MAXY, 0, tft.height());
-  return true;
 }
 
 

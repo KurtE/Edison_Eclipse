@@ -40,9 +40,10 @@
 class TFTDisplayObject {
 public:
   virtual void  	enable(bool fEnabled) ;
-  inline bool 		enabled(void) {return _fEnabled;};
-  inline void		visible(bool fVisble) {_fVisible = fVisble;};
-  inline bool 		visible(void) {return _fVisible;};
+  inline bool 		enabled(void) {return control_enabled_;};
+  inline void		visible(bool fVisble) {control_visible_ = fVisble;};
+  inline bool 		visible(void) {return control_visible_;};
+  inline void		pressed(bool fPressed) {control_logically_pressed_ = fPressed;};
 
 
   virtual void 		draw(void)=0;
@@ -56,17 +57,15 @@ protected:
   uint16_t    _y;
   uint16_t    _w;
   uint16_t    _h;
-bool 	  _fEnabled : 1;
-bool 	  _fPressed : 1;
-bool       _fTouchActive :  1;
-bool       _fVisible : 1;
+  bool 	      control_enabled_ : 1;
+  bool 	      control_logically_pressed_ : 1;
+  bool        control_visible_ : 1;
 };
 
 
 //-----------------------------------------------------------------------------
 // Helper functions.
 //-----------------------------------------------------------------------------
-extern bool GetTouchPoint(uint16_t *pwX, uint16_t *pwY);
 extern void DisplayGraphicString(word x, word y, byte bFont, word wColor, uint32_t ulBGColor, const char *pb);
 
 

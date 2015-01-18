@@ -35,7 +35,7 @@
 class TFTSlider  :
 public TFTDisplayObject {
 public:
-  TFTSlider (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wClr, uint16_t wHiClr, uint16_t wBackClr, uint16_t wMin, uint16_t wMax, uint16_t wVal);
+  TFTSlider (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t color_background, uint16_t wHiClr, uint16_t wBackClr, uint16_t wMin, uint16_t wMax, uint16_t wVal);
   virtual void draw(void);
   virtual uint16_t processTouch(uint16_t x, uint16_t y);
 
@@ -46,16 +46,16 @@ public:
   void SetValue(uint16_t wVal);
 
   inline void SetPressed(bool fPressed)  {
-    _fPressed = fPressed;
+    control_logically_pressed_ = fPressed;
   };
 private:
   inline void mapValueToDisplayValue(void);
   inline uint16_t mapDisplayValueToValue(uint16_t wXorY);
 
-  uint16_t _wClr;
+  uint16_t color_background_;
   uint16_t _wHiClr;
   uint16_t _wBackClr;
-  bool _fPressed;
+  bool control_logically_pressed_;
   bool _fVert;        // is the slider vertical or horizontal?
 
   uint16_t _wMin;

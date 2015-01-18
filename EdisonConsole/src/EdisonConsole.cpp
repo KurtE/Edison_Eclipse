@@ -152,7 +152,7 @@ void loop(void)
 
     // Retrieve a point and map it to our screen coordinates
     uint16_t x, y;
-    GetTouchPoint(&x, &y);
+    TFTScreen::getTouchPoint(&x, &y);
 
     // Call off to current screen to prcess touch event.
     TFTScreen::curScreen()->processTouch(x, y);

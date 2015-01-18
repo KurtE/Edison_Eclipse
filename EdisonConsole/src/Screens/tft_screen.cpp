@@ -58,11 +58,25 @@ void TFTScreen::setCurrentScreen(TFTScreen *pscreenNew) {
 	TFTScreen::curScreen()->draw();
 }
 
+//=============================================================================
+// TFTScreen::getTouchPoint - Get the touch status associated with our display
+//=============================================================================
+bool TFTScreen::getTouchPoint(uint16_t *pwX, uint16_t *pwY)
+{
+   TS_Point p = ts.getPoint();
+
+  // Scale from ~0->4000 to tft.width using the calibration #'s
+  *pwX = map(p.y, TS_MINX, TS_MAXX, tft.width(), 0);
+  *pwY = map(p.x, TS_MINY, TS_MAXY, 0, tft.height());
+  return true;
+}
+
+
 //=============================================================================================================
 //  Screen Constructor
 //=============================================================================================================
-TFTScreen::TFTScreen(uint16_t wClr, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen *pscreenNext, TFTScreen *pscreenPrev) {
-	_wClr = wClr;
+TFTScreen::TFTScreen(uint16_t color_background, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen *pscreenNext, TFTScreen *pscreenPrev) {
+	color_background_ = color_background;
 	_ppdisp = ppdisp;
 	_cdisp = cdisp;
 	_pscreenNext = pscreenNext;
@@ -73,7 +87,7 @@ TFTScreen::TFTScreen(uint16_t wClr, TFTDisplayObject **ppdisp, uint8_t cdisp, TF
 //  Screen Draw
 //=============================================================================================================
 void TFTScreen::draw(void) {
-	tft.fillScreen(_wClr);
+	tft.fillScreen(color_background_);
 	//printf("Screen Draw called: %d\n", _cdisp);
 
 	for(uint8_t i=0; i < _cdisp; i++) {
@@ -86,7 +100,7 @@ void TFTScreen::draw(void) {
 //  Set visible
 //=============================================================================================================
 void TFTScreen::setVisible(bool fVisible) {
-	tft.fillScreen(_wClr);
+	tft.fillScreen(color_background_);
 	visible(false);	// first set our object visible
 
 	// And set the state of all of the objects...

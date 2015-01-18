@@ -34,17 +34,17 @@
 class TFTText  :
 public TFTDisplayObject {
 public:
-  TFTText (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint32_t wClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal);
+  TFTText (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint32_t color_background, uint16_t wHiClr, uint16_t color_text, std::string str, uint16_t wVal);
   virtual void draw(void);
   virtual uint16_t processTouch(uint16_t x, uint16_t y);
 private:
-  uint32_t _wClr;
+  uint32_t color_background_;
   uint16_t _wHiClr;
-  uint16_t _wTextClr;
+  uint16_t color_text_;
   std::string _str;
   uint16_t  _wVal;
 
-  //        bool _fPressed;
+  //        bool control_logically_pressed_;
 };
 
 

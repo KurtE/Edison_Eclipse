@@ -35,16 +35,18 @@
 class TFTScreen :
 public TFTDisplayObject {
 public:
-	TFTScreen(uint16_t wClr, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen *pscreenNext, TFTScreen *pscreenPrev);
+	TFTScreen(uint16_t color_background, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen *pscreenNext, TFTScreen *pscreenPrev);
 	  virtual void draw(void);
 	  virtual uint16_t processTouch(uint16_t x, uint16_t y);
 	  virtual void setVisible(bool fVisible);
 	  virtual uint16_t idleTime(void);				// Call when nothing touched to allow background stuff to happen...
 
+	  static bool getTouchPoint(uint16_t *pwX, uint16_t *pwY);	// currently setup as static function so only one version...
+
 static void setCurrentScreen(TFTScreen* pscreen);
 static inline TFTScreen* curScreen(void) {return _pScreenCur;};
 protected:
-  uint16_t _wClr;
+  uint16_t color_background_;
   TFTDisplayObject **_ppdisp;
   uint8_t _cdisp;			// count of display objects
   TFTScreen  *_pscreenNext;	// Next Screen
@@ -57,7 +59,6 @@ static TFTScreen *_pScreenCur; // Our current Screen;
 // Define our Screens.
 extern TFTScreen *g_pscreenCur;
 void InitScreens(void);
-bool GetTouchPoint(uint16_t *pwX, uint16_t *pwY);
 #define CMD_OK	 200
 #define CMD_PREV 204
 #define CMD_NEXT 205

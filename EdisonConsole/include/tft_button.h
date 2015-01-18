@@ -35,23 +35,23 @@
 class TFTButton  :
 public TFTDisplayObject {
 public:
-  TFTButton (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wBtnClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal, bool fEnabled=true);
+  TFTButton (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wBtnClr, uint16_t wHiClr, uint16_t color_text, std::string str, uint16_t wVal, bool fEnabled=true);
   virtual void draw(void);
   virtual uint16_t processTouch(uint16_t x, uint16_t y);
   virtual void  	enable(bool fEnabled) ;
 
   // some button specific functions
   inline void SetPressed(boolean fPressed)  {
-    _fPressed = fPressed;
+    control_logically_pressed_ = fPressed;
   };
 private:
   uint16_t _wBtnClr;
   uint16_t _wHiClr;
-  uint16_t _wTextClr;
+  uint16_t color_text_;
   std::string _str;
   uint16_t  _wVal;
 
-  //        boolean _fPressed;
+  //        boolean control_logically_pressed_;
 };
 
 

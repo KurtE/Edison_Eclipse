@@ -42,8 +42,8 @@
 
 class TFTMainScreen : public TFTScreen {
 public:
-	TFTMainScreen(uint16_t wClr, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen* pscreenNext, TFTScreen* pscreenPrev) :
-		TFTScreen(wClr, ppdisp, cdisp, pscreenNext, pscreenPrev) {};
+	TFTMainScreen(uint16_t color_background, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen* pscreenNext, TFTScreen* pscreenPrev) :
+		TFTScreen(color_background, ppdisp, cdisp, pscreenNext, pscreenPrev) {};
 
 	  virtual uint16_t processTouch(uint16_t x, uint16_t y);
 };

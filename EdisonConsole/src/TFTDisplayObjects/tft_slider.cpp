@@ -23,25 +23,26 @@
 
 #include "globals.h"
 #include "tft_slider.h"
+#include "tft_screen.h"
 #include <string.h>
 //=============================================================================================================
 //  Display Object: slider
 //=============================================================================================================
-TFTSlider::TFTSlider (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t wClr, uint16_t wHiClr, uint16_t wBackClr, uint16_t wMin, uint16_t wMax, uint16_t wVal) {
+TFTSlider::TFTSlider (uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint16_t color_background, uint16_t wHiClr, uint16_t wBackClr, uint16_t wMin, uint16_t wMax, uint16_t wVal) {
   // first the base objects stuff...
   _x = x;
   _w = dx;
   _y = y;
   _h = dy;
-  _fEnabled = true;        // default to enabled...
-  _fVisible = false;
+  control_enabled_ = true;        // default to enabled...
+  control_visible_ = false;
   _fVert = (dy > dx);
 
   // Now the slider specific fields
-  _wClr = wClr;
+  color_background_ = color_background;
   _wHiClr = wHiClr;
   _wBackClr = wBackClr;
-  _fPressed = false;
+  control_logically_pressed_ = false;
 
   _wMin = wMin;
   _wMax = wMax;
@@ -66,12 +67,12 @@ uint16_t TFTSlider::mapDisplayValueToValue(uint16_t wXorY) {
 
 
 void TFTSlider::draw(void) {
-	if (!_fVisible)
+	if (!control_visible_)
 		return;	// don't draw if it is not currently displayed.
 
 	// Start off real simple simple filled rect to where the current value is... May also have simple text value...
 	//First lets draw the outline frame around our object...
-	tft.drawRect(_x, _y, _w, _h, _wClr);
+	tft.drawRect(_x, _y, _w, _h, color_background_);
 	if (_fVert) {
 		// In vertical we start to fill from bottom to top...
 		if ( _wDispVal > (_y+1))
@@ -88,7 +89,7 @@ void TFTSlider::draw(void) {
 
 uint16_t TFTSlider::processTouch(uint16_t x, uint16_t y) {
 
-	if (!_fVisible || !((x >= _x) && (x <= (_x+_w)) && (y >= _y) && (y <= (_y+_h))))
+	if (!control_visible_ || !((x >= _x) && (x <= (_x+_w)) && (y >= _y) && (y <= (_y+_h))))
 		return 0x0;        // Special value that says Not within the object...
 
 	SetPressed(true);
@@ -96,7 +97,7 @@ uint16_t TFTSlider::processTouch(uint16_t x, uint16_t y) {
 
 	// Now lets wait for the touch to release...
     while (ts.touched()) {
-      GetTouchPoint(&x, &y);
+      TFTScreen::getTouchPoint(&x, &y);
       if (_fVert) {
     	  if ((y >= _y) && (y <= (_y+_h))) {
     		  _wDispVal = y;
@@ -111,7 +112,7 @@ uint16_t TFTSlider::processTouch(uint16_t x, uint16_t y) {
       }
 	}
     while (!ts.bufferEmpty()) {
-		GetTouchPoint(&x, &y);
+		TFTScreen::getTouchPoint(&x, &y);
 	}
 
 	SetPressed(false);

@@ -48,8 +48,8 @@
 
 class TFTRunScreen : public TFTScreen {
 public:
-	TFTRunScreen(uint16_t wClr, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen* pscreenNext, TFTScreen* pscreenPrev) :
-		TFTScreen(wClr, ppdisp, cdisp, pscreenNext, pscreenPrev) {
+	TFTRunScreen(uint16_t color_background, TFTDisplayObject **ppdisp, uint8_t cdisp, TFTScreen* pscreenNext, TFTScreen* pscreenPrev) :
+		TFTScreen(color_background, ppdisp, cdisp, pscreenNext, pscreenPrev) {
 #ifdef TRYPOPEN2
 			_toProcessfp=0; _fromProcessfp = 0; _tid = 0;
 #else
@@ -74,19 +74,29 @@ public:
 
       static void *ProcessThreadProc(void *);
       void cancelRunningApp();
+      void sendCommandToRunningApp(std::string command_string);
+
+      // Define our local commands here
+      static const int CMD_CLOSE = 103;
+	  static const int CMD_DBG	=  104;
+	  static const int CMD_SRVO = 105;
+
 
 };
 
 //=============================================================================
 // Define graphic objects specific to this screen
 //=============================================================================
-#define CMD_CLOSE 103
 
-static TFTButton _btnClose(10, 50, 100, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Close", CMD_CLOSE);
- TFTTextBox txtMsgs(10, 100, 300, 132, ILI9341_BLACK, ILI9341_WHITE, ILI9341_GREEN);
+static TFTButton _btnClose(10, 50, 100, KPD_BHEIGHT, DCLR_BUTTON_GREY, ILI9341_RED, ILI9341_BLACK, "Close", TFTRunScreen::CMD_CLOSE);
+static TFTButton _btnDBG(210, 10, 48, 34, DCLR_BUTTON_GREY, DCLR_BUTTON_YELLOW, ILI9341_BLACK, "Dbg", TFTRunScreen::CMD_DBG);
+static TFTButton _btnServos(210, 55, 48, 34, DCLR_BUTTON_GREY, DCLR_BUTTON_YELLOW, ILI9341_BLACK, "Srv", TFTRunScreen::CMD_SRVO);
+
+
+static TFTTextBox txtMsgs(10, 100, 300, 132, ILI9341_BLACK, ILI9341_WHITE, ILI9341_GREEN);
 
 TFTDisplayObject *_runscreenobjs[] = {&g_btnup,&g_btndn,
-		&_btnClose, &txtMsgs, &g_txtTitle};
+		&_btnClose, &_btnDBG, &_btnServos, &txtMsgs, &g_txtTitle};
 
 
 
@@ -110,13 +120,21 @@ uint16_t TFTRunScreen::processTouch(uint16_t x, uint16_t y)
 		case CMD_CLOSE:
 			cancelRunningApp();
 				break;
+
+		case CMD_DBG:
+			sendCommandToRunningApp("d\n\r");
+				break;
+
+		case CMD_SRVO:
+			sendCommandToRunningApp("t\n\r");
+				break;
 		}
 	}
 	return wTouch;
 }
 
 //=============================================================================
-// Thread process
+// cancelRunningApp
 //=============================================================================
 void TFTRunScreen::cancelRunningApp(void) {
 #ifdef TRYPOPEN2
@@ -149,6 +167,17 @@ void TFTRunScreen::cancelRunningApp(void) {
 #endif
 }
 
+//=============================================================================
+// sendCommandToRunningApp - send command string to running app
+//=============================================================================
+void TFTRunScreen::sendCommandToRunningApp(std::string command_string)
+{
+	if (_toProcessfp) {
+		const char *psz = command_string.c_str();
+		write(_toProcessfp, (void*)psz, strlen(psz));
+	}
+
+}
 
 //=============================================================================
 // Thread process

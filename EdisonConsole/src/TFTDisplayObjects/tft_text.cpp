@@ -32,33 +32,33 @@
 //=============================================================================================================
 //  Display Object: Text
 //=============================================================================================================
- TFTText::TFTText(uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint32_t wClr, uint16_t wHiClr, uint16_t wTextClr, std::string str, uint16_t wVal)  {
+ TFTText::TFTText(uint16_t x, uint16_t y, uint16_t dx, uint16_t dy, uint32_t color_background, uint16_t wHiClr, uint16_t color_text, std::string str, uint16_t wVal)  {
   // Save away all of the data...
   // first the base objects stuff...
   _x = x;
   _w =dx;
   _y = y;
   _h = dy;
-  _fEnabled = true;        // default to enabled...
-  _fVisible = false;
+  control_enabled_ = true;        // default to enabled...
+  control_visible_ = false;
 
-  _wClr = wClr;
+  color_background_ = color_background;
   _wHiClr = wHiClr;
-  _wTextClr = wTextClr;
+  color_text_ = color_text;
  _str = str;
   _wVal = wVal;
 }
 
 
 void TFTText::draw() {
-	if (!_fVisible)
+	if (!control_visible_)
 		return;	// don't draw if it is not currently displayed.
 
-	if (_wClr != (uint32_t)-1)
-		tft.fillRect(_x, _y, _w, _h, _wClr);
+	if (color_background_ != (uint32_t)-1)
+		tft.fillRect(_x, _y, _w, _h, color_background_);
 
 	// Now output graphic text...
-	DisplayGraphicString(_x, _y , 3, _wTextClr, -1, (const char*)(_str.c_str()));
+	DisplayGraphicString(_x, _y , 3, color_text_, -1, (const char*)(_str.c_str()));
 }
 
 // Assumes that we got a button down event, we pass in the X, Y from this event and it will check to see if the coordinates
