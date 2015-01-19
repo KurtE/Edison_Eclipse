@@ -224,8 +224,9 @@ void *TFTRunScreen::ProcessThreadProc(void *pv)
 
             // BUGBUG:: handle standard terminal better
             ioctl(fdFromProc, FIONREAD, &cBytes);
+            txtMsgs.batchUpdateMode(true); 	// lets try to add all of them at once as scroll speed is SLOW
 
-           while((cBytes-- > 0) && (ret = read(fdFromProc, &ch, 1)) > 0)
+            while((cBytes-- > 0) && (ret = read(fdFromProc, &ch, 1)) > 0)
 //           if((!prun->_fCancel) && (ret = read(fdFromProc, &ch, 1)) > 0)
         	{
         		if (ch >= ' ') {
@@ -238,6 +239,7 @@ void *TFTRunScreen::ProcessThreadProc(void *pv)
 				}
 				ulLastChar = millis();
         	}
+            txtMsgs.batchUpdateMode(false); 	// Now update display...
         }
         if ((millis()-ulLastChar) > 1000) {
         	// Been more than a second since we saw something check to see if the process is still

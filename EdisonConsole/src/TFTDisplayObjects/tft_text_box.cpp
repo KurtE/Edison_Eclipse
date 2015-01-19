@@ -127,9 +127,7 @@ uint16_t TFTTextBox::processTouch(uint16_t x, uint16_t y) {
 // TFTTextBox:: add
 //=============================================================================================================
 void TFTTextBox::add(char *psz) {
-	uint8_t len = strlen(psz);
-
-	char *pszNew = (char*)malloc(len);		// Allocate a new string
+	char *pszNew = (char*)malloc(strlen(psz)+1);		// Allocate a new string
 	if (!pszNew)
 		return;	// we failed;
 	strcpy(pszNew, psz);	// Save away the new string.
