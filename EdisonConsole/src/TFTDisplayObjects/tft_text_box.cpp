@@ -68,11 +68,12 @@ TFTTextBox::~TFTTextBox() {
 void TFTTextBox::draw() {
 	if(!control_visible_)
 		return;
+	tft.threadLock();
 	if (color_background_ != (uint32_t)-1)
 		tft.fillRect(_x, _y, _w, _h, color_background_);
 	if (color_outline_ != (uint32_t)-1)
 		tft.drawRect(_x, _y, _w, _h, color_outline_);
-
+	tft.threadUnlock();
 	// See if we have any Text to display...
 	update(false);	// Leave the top where it was...
 
@@ -184,7 +185,7 @@ void TFTTextBox::update(bool make_last_line_visible) {						// tell the control 
 
 	if (make_last_line_visible && (count_lines_added_ == 0))
 		return;	// nothing to update.
-
+	tft.threadLock();
 	tft.setTextSize(2);
     tft.setTextColor(color_text_, ILI9341_BLACK);
 
@@ -224,6 +225,7 @@ void TFTTextBox::update(bool make_last_line_visible) {						// tell the control 
     	y += CHAR_HEIGHT;
 
     }
+    tft.threadUnlock();
     count_lines_added_ = 0;
 }
 
@@ -238,8 +240,11 @@ void TFTTextBox::clear() {						// clear the list
 	count_lines_ = 0;
 	index_top_ = 0;
 	index_add_ = 0;	// make sure all counters are reset.
-	if (control_visible_)
+	if (control_visible_) {
+		tft.threadLock();
 		tft.fillRect(_x+2, _y+2, _w-4, _h-4, ILI9341_BLACK);
+		tft.threadUnlock();
+	}
 }
 
 //=============================================================================================================

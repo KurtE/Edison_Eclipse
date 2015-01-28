@@ -66,6 +66,7 @@ void TFTButton::draw() {
     uint16_t wYText = _y + _h/2 - 16/2;
 
    // printf("%d %d %d BTN %s\n", _x, _y, control_logically_pressed_, _str.c_str());
+    tft.threadLock();
     if (control_logically_pressed_) {
         tft.fillRect(_x, _y, _w, _h, _wHiClr);
         tft.drawRect(_x+2, _y+2, _w-4, _h-4, _wBtnClr);
@@ -84,6 +85,7 @@ void TFTButton::draw() {
         else
         	DisplayGraphicString(wXText, wYText , 3, tft.color565(0x80, 0x80, 0x80), -1, _str.c_str());  // BUGBUG hard coded...
     }
+    tft.threadUnlock();
 }
 
 

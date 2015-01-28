@@ -53,12 +53,13 @@
 void TFTText::draw() {
 	if (!control_visible_)
 		return;	// don't draw if it is not currently displayed.
-
+	tft.threadLock();
 	if (color_background_ != (uint32_t)-1)
 		tft.fillRect(_x, _y, _w, _h, color_background_);
 
 	// Now output graphic text...
 	DisplayGraphicString(_x, _y , 3, color_text_, -1, (const char*)(_str.c_str()));
+	tft.threadUnlock();
 }
 
 // Assumes that we got a button down event, we pass in the X, Y from this event and it will check to see if the coordinates

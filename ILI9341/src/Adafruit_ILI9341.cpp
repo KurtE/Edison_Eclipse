@@ -203,6 +203,7 @@ void Adafruit_ILI9341::commandList(uint8_t *addr) {
 
 void Adafruit_ILI9341::begin(void) {
   mraa_gpio_context gpioRST = NULL;
+  pthread_mutex_init(&lockTFT_, NULL);
   InitTransaction();
   if (_rst > 0) 
     gpioRST = mraa_gpio_init(_rst);
@@ -372,6 +373,7 @@ void Adafruit_ILI9341::end(void) {
         _gpioDC = NULL;
     }
     DestroyTransaction();
+    pthread_mutex_destroy(&lockTFT_);
 }
 
 

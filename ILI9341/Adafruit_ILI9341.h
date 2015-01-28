@@ -143,12 +143,16 @@ class Adafruit_ILI9341 : public Adafruit_GFX {
            commandList(uint8_t *addr);
   uint8_t  spiread(void);
 
+  void inline threadLock(void) 		{pthread_mutex_lock(&lockTFT_);};		    // Add a mutex to maybe allow user to lock screen to make
+  void inline threadUnlock(void)    {pthread_mutex_unlock(&lockTFT_);}; 	    // Some multiple drawing operatiosn thread safe.
+
  private:
   uint8_t  tabcolor;
   void setAddr(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) __attribute__((always_inline)) ;
   void spi_begin(void) __attribute__((always_inline));
   void spi_end(void) __attribute__((always_inline));
 
+  pthread_mutex_t lockTFT_;
   uint8_t mySPCR;
   
   int8_t  _cs, _dc, _rst;
