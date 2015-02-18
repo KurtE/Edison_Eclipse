@@ -261,7 +261,7 @@ void XBeeOutputStringF(const __FlashStringHelper *pString)
     // Could replicate SendXBeePacket function to handle program memory.
     // But for first shot, simply copy string to local and then use it...
     char szT[20];                                 // This should be large enough to hold our maximum string.
-    strcpy_P(szT, (const char PROGMEM *)pString);
+    strcpy_P(szT, (const char  *)pString);
     SendXBeePacket(g_diystate.wAPIDL, XBEE_RECV_DISP_STR, strlen(szT), (uint8_t*)szT);
 }
 #endif

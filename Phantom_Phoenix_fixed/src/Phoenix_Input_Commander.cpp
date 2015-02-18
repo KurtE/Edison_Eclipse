@@ -95,13 +95,13 @@ enum
 extern "C"
 {
     // Move the Gait Names to program space...
-    const char s_sGN1[] PROGMEM = "Ripple 12";
-    const char s_sGN2[] PROGMEM = "Tripod 8";
-    const char s_sGN3[] PROGMEM = "Tripple 12";
-    const char s_sGN4[] PROGMEM = "Tripple 16";
-    const char s_sGN5[] PROGMEM = "Wave 24";
-    const char s_sGN6[] PROGMEM = "Tripod 6";
-    PGM_P s_asGateNames[] PROGMEM =
+    const char s_sGN1[]  = "Ripple 12";
+    const char s_sGN2[]  = "Tripod 8";
+    const char s_sGN3[]  = "Tripple 12";
+    const char s_sGN4[]  = "Tripple 16";
+    const char s_sGN5[]  = "Wave 24";
+    const char s_sGN6[]  = "Tripod 6";
+    const char * s_asGateNames[]  =
     {
         s_sGN1, s_sGN2, s_sGN3, s_sGN4, s_sGN5, s_sGN6
     };

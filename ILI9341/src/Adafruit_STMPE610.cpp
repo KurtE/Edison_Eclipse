@@ -45,16 +45,19 @@ boolean Adafruit_STMPE610::begin() {
     // hardware SPI
 	InitTransaction();
 
-    _gpioCS = mraa_gpio_init(_cs);
-    mraa_gpio_dir(_gpioCS, MRAA_GPIO_OUT);
-    CSHigh();
-
-    SPI = mraa_spi_init(1);   // which buss?   will experment here...
+//    SPI = mraa_spi_init(0);   // which buss?   will experment here...
+    SPI = mraa_spi_init_software_cs(0);   // which buss?   will experment here...
     mraa_spi_frequency(SPI, 1000000);
     mraa_spi_lsbmode(SPI, false);  
     mraa_spi_mode(SPI, MRAA_SPI_MODE0);
 
     m_spiMode = MRAA_SPI_MODE0;
+
+    _gpioCS = mraa_gpio_init(_cs);
+    mraa_gpio_dir(_gpioCS, MRAA_GPIO_OUT);
+    CSHigh();
+
+    mraa_spi_write(SPI, 0x00);
 
     // try mode0
     if (getVersion() != 0x811) {

@@ -140,7 +140,7 @@ class Adafruit_ILI9341 : public Adafruit_GFX {
            writedata16(uint16_t color),
            writedata16_cont(uint16_t color),
            writedata16X2_cont(uint16_t w1, uint16_t w2),
-           commandList(uint8_t *addr);
+           commandList(const uint8_t *addr);
   uint8_t  spiread(void);
 
   void inline threadLock(void) 		{pthread_mutex_lock(&lockTFT_);};		    // Add a mutex to maybe allow user to lock screen to make

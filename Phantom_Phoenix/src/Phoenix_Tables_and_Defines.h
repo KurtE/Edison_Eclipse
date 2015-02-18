@@ -102,7 +102,7 @@
 #ifdef cRRFemurHornOffset1                        // per leg configuration
 static const short cFemurHornOffset1[] = {
   cRRFemurHornOffset1, cRMFemurHornOffset1, cRFFemurHornOffset1, cLRFemurHornOffset1, cLMFemurHornOffset1, cLFFemurHornOffset1};
-#define CFEMURHORNOFFSET1(LEGI) ((short)pgm_read_word(&cFemurHornOffset1[LEGI]))
+#define CFEMURHORNOFFSET1(LEGI) ((short)(cFemurHornOffset1[LEGI]))
 #else                                             // Fixed per leg, if not defined 0
 #ifndef cFemurHornOffset1
 #define cFemurHornOffset1  0
@@ -113,7 +113,7 @@ static const short cFemurHornOffset1[] = {
 #ifdef cRRTibiaHornOffset1   // per leg configuration
 static const short cTibiaHornOffset1[] = {
   cRRTibiaHornOffset1, cRMTibiaHornOffset1, cRFTibiaHornOffset1, cLRTibiaHornOffset1, cLMTibiaHornOffset1, cLFTibiaHornOffset1};
-#define CTIBIAHORNOFFSET1(LEGI) ((short)pgm_read_word(&cTibiaHornOffset1[LEGI]))
+#define CTIBIAHORNOFFSET1(LEGI) ((short)(cTibiaHornOffset1[LEGI]))
 #else   // Fixed per leg, if not defined 0
 #ifndef cTibiaHornOffset1
 #define cTibiaHornOffset1  0
@@ -125,7 +125,7 @@ static const short cTibiaHornOffset1[] = {
 #ifdef cRRTarsHornOffset1                         // per leg configuration
 static const short cTarsHornOffset1[] = {
   cRRTarsHornOffset1,  cRMTarsHornOffset1,  cRFTarsHornOffset1,  cLRTarsHornOffset1,  cLMTarsHornOffset1,  cLFTarsHornOffset1};
-#define CTARSHORNOFFSET1(LEGI) ((short)pgm_read_word(&cTarsHornOffset1[LEGI]))
+#define CTARSHORNOFFSET1(LEGI) ((short)(cTarsHornOffset1[LEGI]))
 #else                                             // Fixed per leg, if not defined 0
 #ifndef cTarsHornOffset1
 #define cTarsHornOffset1  0
@@ -208,7 +208,7 @@ const short cInitPosZ[] = {
 #ifdef cRRFemurHornOffset1                        // per leg configuration
 static const short cFemurHornOffset1[] = {
   cRRFemurHornOffset1, cRFFemurHornOffset1, cLRFemurHornOffset1, cLFFemurHornOffset1};
-#define CFEMURHORNOFFSET1(LEGI) ((short)pgm_read_word(&cFemurHornOffset1[LEGI]))
+#define CFEMURHORNOFFSET1(LEGI) ((short)(cFemurHornOffset1[LEGI]))
 #else                                             // Fixed per leg, if not defined 0
 #ifndef cFemurHornOffset1
 #define cFemurHornOffset1  0
@@ -219,7 +219,7 @@ static const short cFemurHornOffset1[] = {
 #ifdef cRRTibiaHornOffset1   // per leg configuration
 static const short cTibiaHornOffset1[] = {
   cRRTibiaHornOffset1, cRFTibiaHornOffset1, cLRTibiaHornOffset1, cLFTibiaHornOffset1};
-#define CTIBIAHORNOFFSET1(LEGI) ((short)pgm_read_word(&cTibiaHornOffset1[LEGI]))
+#define CTIBIAHORNOFFSET1(LEGI) ((short)(cTibiaHornOffset1[LEGI]))
 #else   // Fixed per leg, if not defined 0
 #ifndef cTibiaHornOffset1
 #define cTibiaHornOffset1  0
@@ -233,7 +233,7 @@ static const short cTibiaHornOffset1[] = {
 #ifdef cRRTarsHornOffset1                         // per leg configuration
 static const short cTarsHornOffset1[] = {
   cRRTarsHornOffset1, cRFTarsHornOffset1,  cLRTarsHornOffset1, cLFTarsHornOffset1};
-#define CTARSHORNOFFSET1(LEGI) ((short)pgm_read_word(&cTarsHornOffset1[LEGI]))
+#define CTARSHORNOFFSET1(LEGI) ((short)(cTarsHornOffset1[LEGI]))
 #else                                             // Fixed per leg, if not defined 0
 #ifndef cTarsHornOffset1
 #define cTarsHornOffset1  0

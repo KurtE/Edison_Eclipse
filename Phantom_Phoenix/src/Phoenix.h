@@ -101,7 +101,7 @@ void RotateLegInitAngles (int iDeltaAngle);
 extern boolean g_fDBGHandleError;
 
 #ifdef c4DOF
-extern const byte cTarsLength[] PROGMEM;
+extern const byte cTarsLength[] ;
 #endif
 
 #ifdef OPT_BACKGROUND_PROCESS
@@ -185,7 +185,7 @@ typedef struct _PhoenixGait {
 #endif
   byte            GaitLegNr[CNT_LEGS]; //Init position of the leg
 #ifdef DISPLAY_GAIT_NAMES
-  PGM_P           pszName;             // The gait name
+  const char *           pszName;             // The gait name
 #endif
 }
 PHOENIXGAIT;

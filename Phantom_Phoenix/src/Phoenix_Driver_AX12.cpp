@@ -57,7 +57,7 @@ word      g_awGoalAXPos[NUMSERVOS];
 // Global - Local to this file only...
 //=============================================================================
 #ifdef QUADMODE
-static const byte cPinTable[] PROGMEM = {
+static const byte cPinTable[]  = {
   cRRCoxaPin,  cRFCoxaPin,  cLRCoxaPin,  cLFCoxaPin,
   cRRFemurPin, cRFFemurPin, cLRFemurPin, cLFFemurPin,
   cRRTibiaPin, cRFTibiaPin, cLRTibiaPin, cLFTibiaPin
@@ -69,7 +69,7 @@ static const byte cPinTable[] PROGMEM = {
 #endif
 };
 #else
-static const byte cPinTable[] PROGMEM = {
+static const byte cPinTable[]  = {
   cRRCoxaPin,  cRMCoxaPin,  cRFCoxaPin,  cLRCoxaPin,  cLMCoxaPin,  cLFCoxaPin,
   cRRFemurPin, cRMFemurPin, cRFFemurPin, cLRFemurPin, cLMFemurPin, cLFFemurPin,
   cRRTibiaPin, cRMTibiaPin, cRFTibiaPin, cLRTibiaPin, cLMTibiaPin, cLFTibiaPin
@@ -296,12 +296,12 @@ void ServoDriver::OutputServoInfoForLeg(int LegIndex, float CoxaAngle, float Fem
 #endif
   if (ServosEnabled) {
       // With new library we set by Index.  Note Index defaults to servoID - 1
-      bioloid.setNextPoseByIndex(pgm_read_byte(&cPinTable[FIRSTCOXAPIN+LegIndex])-1, wCoxaSDV);
-      bioloid.setNextPoseByIndex(pgm_read_byte(&cPinTable[FIRSTFEMURPIN+LegIndex])-1, wFemurSDV);
-      bioloid.setNextPoseByIndex(pgm_read_byte(&cPinTable[FIRSTTIBIAPIN+LegIndex])-1, wTibiaSDV);
+      bioloid.setNextPoseByIndex((cPinTable[FIRSTCOXAPIN+LegIndex])-1, wCoxaSDV);
+      bioloid.setNextPoseByIndex((cPinTable[FIRSTFEMURPIN+LegIndex])-1, wFemurSDV);
+      bioloid.setNextPoseByIndex((cPinTable[FIRSTTIBIAPIN+LegIndex])-1, wTibiaSDV);
 #ifdef c4DOF
-      if ((byte)pgm_read_byte(&cTarsLength[LegIndex]))   // We allow mix of 3 and 4 DOF legs...
-        bioloid.setNextPoseByIndex(pgm_read_byte(&cPinTable[FIRSTTARSPIN+LegIndex])-1, wTarsSDV);
+      if ((byte)(cTarsLength[LegIndex]))   // We allow mix of 3 and 4 DOF legs...
+        bioloid.setNextPoseByIndex((cPinTable[FIRSTTARSPIN+LegIndex])-1, wTarsSDV);
 #endif
   }
 #ifdef DEBUG_SERVOS
@@ -440,7 +440,7 @@ void ServoDriver::FreeServos(void)
     SetRegOnAllServos(AX_TORQUE_ENABLE, 0);
 #if 0
     for (byte i = 0; i < NUMSERVOS; i++) {
-      Relax(pgm_read_byte(&cPinTable[i]));
+      Relax((cPinTable[i]));
     }
 #endif
     g_InputController.AllowControllerInterrupts(true);
@@ -462,7 +462,7 @@ void ServoDriver::IdleTime(void)
     g_iIdleServoNum = 0;
     g_iIdleLedState = 1 - g_iIdleLedState;
   }
-  dxl_write_byte(pgm_read_byte(&cPinTable[g_iIdleServoNum]), AX_LED, g_iIdleLedState);
+  dxl_write_byte((cPinTable[g_iIdleServoNum]), AX_LED, g_iIdleLedState);
   dxl_get_result();   // don't care for now
 }
 
@@ -480,7 +480,7 @@ void SetRegOnAllServos(uint8_t bReg, uint8_t bVal)
     dxl_set_txpacket_length(2*NUMSERVOS+3);
 
     for (byte i = 0; i < NUMSERVOS; i++) {
-        dxl_set_txpacket_parameter(2+i*2, pgm_read_byte(&cPinTable[i]));       // 1 byte
+        dxl_set_txpacket_parameter(2+i*2, (cPinTable[i]));       // 1 byte
         dxl_set_txpacket_parameter(3+i*2, bVal);       // 1 byte
     }
     dxl_txrx_packet();
@@ -504,7 +504,7 @@ void MakeSureServosAreOn(void)
     SetRegOnAllServos(AX_TORQUE_ENABLE, 1);
 #if 0
     for (byte i = 0; i < NUMSERVOS; i++) {
-      TorqueOn(pgm_read_byte(&cPinTable[i]));
+      TorqueOn((cPinTable[i]));
     }
 #endif
     g_InputController.AllowControllerInterrupts(true);
@@ -520,15 +520,15 @@ void MakeSureServosAreOn(void)
 //==============================================================================
 void ServoDriver::ShowTerminalCommandList(void)
 {
-  DBGSerial.println(F("M - Toggle Motors on or off"));
-  DBGSerial.println(F("F<frame length> - FL in ms"));    // BUGBUG::
-  DBGSerial.println(F("A - Toggle AX12 speed control"));
-  DBGSerial.println(F("T - Test Servos"));
+  DBGSerial.println("M - Toggle Motors on or off");
+  DBGSerial.println("F<frame length> - FL in ms");    // BUGBUG::
+  DBGSerial.println("A - Toggle AX12 speed control");
+  DBGSerial.println("T - Test Servos");
 #ifdef OPT_PYPOSE
-  DBGSerial.println(F("P<DL PC> - Pypose"));
+  DBGSerial.println("P<DL PC> - Pypose");
 #endif
 #ifdef OPT_FIND_SERVO_OFFSETS
-  DBGSerial.println(F("O - Enter Servo offset mode"));
+  DBGSerial.println("O - Enter Servo offset mode");
 #endif
 }
 
@@ -541,9 +541,9 @@ boolean ServoDriver::ProcessTerminalCommand(byte *psz, byte bLen)
   if ((bLen == 1) && ((*psz == 'm') || (*psz == 'M'))) {
     g_fEnableServos = !g_fEnableServos;
     if (g_fEnableServos)
-      DBGSerial.println(F("Motors are on"));
+      DBGSerial.println("Motors are on");
     else
-      DBGSerial.println(F("Motors are off"));
+      DBGSerial.println("Motors are off");
 
     return true;
   }
@@ -554,7 +554,7 @@ boolean ServoDriver::ProcessTerminalCommand(byte *psz, byte bLen)
       word w;
       w = ax12GetRegister(i,AX_PRESENT_POSITION_L, 2);
       DBGSerial.print(i,DEC);
-      DBGSerial.print(F("="));
+      DBGSerial.print("=");
       DBGSerial.println(w, DEC);
       delay(25);
     }
@@ -563,9 +563,9 @@ boolean ServoDriver::ProcessTerminalCommand(byte *psz, byte bLen)
   if ((bLen == 1) && ((*psz == 'a') || (*psz == 'A'))) {
     g_fAXSpeedControl = !g_fAXSpeedControl;
     if (g_fAXSpeedControl)
-      DBGSerial.println(F("AX12 Speed Control"));
+      DBGSerial.println("AX12 Speed Control");
     else
-      DBGSerial.println(F("Bioloid Speed"));
+      DBGSerial.println("Bioloid Speed");
   }
   if ((bLen >= 1) && ((*psz == 'f') || (*psz == 'F'))) {
     psz++;  // need to get beyond the first character
@@ -576,7 +576,7 @@ boolean ServoDriver::ProcessTerminalCommand(byte *psz, byte bLen)
       bFrame = bFrame*10 + *psz++ - '0';
     }
     if (bFrame != 0) {
-      DBGSerial.print(F("New Servo Cycles per second: "));
+      DBGSerial.print("New Servo Cycles per second: ");
       DBGSerial.println(1000/bFrame, DEC);
       extern BioloidControllerEx bioloid;
       bioloid.frameLength = bFrame;

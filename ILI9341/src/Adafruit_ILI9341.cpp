@@ -169,33 +169,52 @@ inline void Adafruit_ILI9341::spi_end(void) {
 
 // Rather than a bazillion writecommand() and writedata() calls, screen
 // initialization commands and arguments are organized in these tables
-// stored in PROGMEM.  The table may look bulky, but that's mostly the
+// stored in .  The table may look bulky, but that's mostly the
 // formatting -- storage-wise this is hundreds of bytes more compact
 // than the equivalent code.  Companion function follows.
 #define DELAY 0x80
+/////////////////////////////////////////////
+static const uint8_t CLInit[] = {20, // Number of commands
+		  0xEF, 3, 0x03, 0x80,	0x02,
+		  0xCF, 3, 0x00,0XC1,0X30,
+		  0xED, 4, 0x64,0x03,0X12,0X81,
+		  0xE8, 3, 0x85,0x00,0x78,
+		  0xCB, 5, 0x39,0x2C,0x00,0x34,0x02,
+		  0xF7, 1, 0x20,
+		  0xEA, 2, 0x00,0x00,
+		  ILI9341_PWCTR1, 1, 0x23,
+		  ILI9341_PWCTR2, 1, 0x10,
+		  ILI9341_VMCTR1, 2, 0x3e, 0x28,
+		  ILI9341_VMCTR2, 1, 0x86,
+		  ILI9341_MADCTL, 1, 0x48,
+		  ILI9341_PIXFMT, 1, 0x55,
+		  ILI9341_FRMCTR1,2, 0x00, 0x18,
+		  ILI9341_DFUNCTR,3, 0x08,0x82,0x27,
+		  0xF2,1, 0x00,
+		  ILI9341_GAMMASET, 1, 0x01,
+		  ILI9341_GMCTRP1, 15, 0x0F,0x31,0x2B,0x0C,0x0E,0x08,0x4E,0xF1,0x37,0x07,0x10,0x03,0x0E,0x09,0x00,
+		  ILI9341_GMCTRN1, 15,0x00,0x0E,0x14,0x03,0x11,0x07,0x31,0xC1,0x48,0x08,0x0F,0x0C,0x31,0x36,0x0F,
+		  ILI9341_SLPOUT, 0
+};
 
+////////////////////////////////////////////
 
 // Companion code to the above tables.  Reads and issues
-// a series of LCD commands stored in PROGMEM byte array.
-void Adafruit_ILI9341::commandList(uint8_t *addr) {
+// a series of LCD commands stored in  byte array.
+void Adafruit_ILI9341::commandList(const uint8_t *addr) {
 
   uint8_t  numCommands, numArgs;
-  uint16_t ms;
 
   numCommands = *addr++;   // Number of commands to follow
   while(numCommands--) {                 // For each command...
     writecommand(*addr++); //   Read, issue command
     numArgs  = *addr++;    //   Number of args to follow
-    ms       = numArgs & DELAY;          //   If hibit set, delay follows args
-    numArgs &= ~DELAY;                   //   Mask out delay bit
-    while(numArgs--) {                   //   For each argument...
-      writedata(*addr++);  //     Read, issue argument
-    }
-
-    if(ms) {
-      ms = (uint8_t)(*addr++); // Read post-command delay time (ms)
-      if(ms == 255) ms = 500;     // If 255, delay for 500 ms
-      delay(ms);
+    if (numArgs) {
+    	  DCHigh();
+    	  CSLow();
+    	  mraa_spi_transfer_buf(SPI, (unsigned char *)addr, NULL, numArgs);
+    	  CSHigh();
+    	  addr += numArgs;
     }
   }
 }
@@ -214,7 +233,8 @@ void Adafruit_ILI9341::begin(void) {
   }
 
 
-  SPI = mraa_spi_init(0);   // which buss?   Set to 0 to use default...
+//  SPI = mraa_spi_init(0);   // which buss?   Set to 0 to use default...
+  SPI = mraa_spi_init_software_cs(0);   // which buss?   Set to 0 to use default...
   mraa_spi_bit_per_word(SPI, 8);
   mraa_spi_frequency(SPI, SPI_FREQ);
   mraa_spi_lsbmode(SPI, false);  
@@ -244,8 +264,11 @@ void Adafruit_ILI9341::begin(void) {
     mraa_gpio_close(gpioRST);
   }
 
+  mraa_spi_write(SPI, 0x00);
   
   spi_begin();
+  commandList(CLInit);
+#if 0
   writecommand(0xEF);
   writedata(0x03);
   writedata(0x80);
@@ -349,7 +372,9 @@ void Adafruit_ILI9341::begin(void) {
   writedata(0x36); 
   writedata(0x0F); 
 
-  writecommand(ILI9341_SLPOUT);    //Exit Sleep 
+  writecommand(ILI9341_SLPOUT);    //Exit Sleep
+#endif
+
   spi_end();
   delay(120); 		
   spi_begin();

@@ -5,7 +5,7 @@
  *      Author: Kurt
  */
 #include "globals.h"
-#include "tft_display_object.h"
+#include "display.h"
 
 
 //#############################################################################################################

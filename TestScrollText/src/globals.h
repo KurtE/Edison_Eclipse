@@ -15,7 +15,7 @@
 #include <ArduinoDefs.h>
 #include <Adafruit_ILI9341.h>
 #include <Adafruit_STMPE610.h>
-#include "tft_display_object.h"
+//#include "tft_display_object.h"
 
 // The STMPE610 uses hardware SPI on the shield, and #8
 // Define pin numbers
