@@ -5,6 +5,7 @@
 	<projects>
 		<project>ArduinoSupport</project>
 		<project>ILI9341</project>
+		<project>SoundSupport</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -120,6 +120,11 @@ void setup() {
   Serial.println("ILI9341 Test!");
 
   tft.begin();
+  mraa_gpio_context gpio = mraa_gpio_init(3);
+  mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
+  mraa_gpio_write(gpio, 1);
+
+
 
   // read diagnostics (optional but can help debug problems)
   uint8_t x = tft.readcommand8(ILI9341_RDMODE);
@@ -133,60 +138,60 @@ void setup() {
   x = tft.readcommand8(ILI9341_RDSELFDIAG);
   Serial.print("Self Diagnostic: 0x"); Serial.println(x, HEX);
 
-  Serial.println(F("Benchmark                Time (microseconds)"));
+  Serial.println("Benchmark                Time (microseconds)");
 
-  Serial.print(F("Screen fill              "));
+  Serial.print("Screen fill              ");
   Serial.println(testFillScreen());
   delay(500);
 
-  Serial.print(F("Text                     "));
+  Serial.print("Text                     ");
   Serial.println(testText());
   delay(3000);
 
-  Serial.print(F("Text 2                   "));
+  Serial.print("Text 2                   ");
   Serial.println(testText2());
   delay(3000);
 
-  Serial.print(F("Lines                    "));
+  Serial.print("Lines                    ");
   Serial.println(testLines(ILI9341_CYAN));
   delay(500);
 
-  Serial.print(F("Horiz/Vert Lines         "));
+  Serial.print("Horiz/Vert Lines         ");
   Serial.println(testFastLines(ILI9341_RED, ILI9341_BLUE));
   delay(500);
 
-  Serial.print(F("Rectangles (outline)     "));
+  Serial.print("Rectangles (outline)     ");
   Serial.println(testRects(ILI9341_GREEN));
   delay(500);
 
-  Serial.print(F("Rectangles (filled)      "));
+  Serial.print("Rectangles (filled)      ");
   Serial.println(testFilledRects(ILI9341_YELLOW, ILI9341_MAGENTA));
   delay(500);
 
-  Serial.print(F("Circles (filled)         "));
+  Serial.print("Circles (filled)         ");
   Serial.println(testFilledCircles(10, ILI9341_MAGENTA));
 
-  Serial.print(F("Circles (outline)        "));
+  Serial.print("Circles (outline)        ");
   Serial.println(testCircles(10, ILI9341_WHITE));
   delay(500);
 
-  Serial.print(F("Triangles (outline)      "));
+  Serial.print("Triangles (outline)      ");
   Serial.println(testTriangles());
   delay(500);
 
-  Serial.print(F("Triangles (filled)       "));
+  Serial.print("Triangles (filled)       ");
   Serial.println(testFilledTriangles());
   delay(500);
 
-  Serial.print(F("Rounded rects (outline)  "));
+  Serial.print("Rounded rects (outline)  ");
   Serial.println(testRoundRects());
   delay(500);
 
-  Serial.print(F("Rounded rects (filled)   "));
+  Serial.print("Rounded rects (filled)   ");
   Serial.println(testFilledRoundRects());
   delay(500);
 
-  Serial.println(F("Done!"));
+  Serial.println("Done!");
 
 }
 

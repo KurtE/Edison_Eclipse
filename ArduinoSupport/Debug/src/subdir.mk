@@ -9,15 +9,12 @@ CPP_SRCS += \
 ../src/PWM.cpp \
 ../src/Print.cpp \
 ../src/RoboClaw.cpp \
-../src/SDRFunctions.cpp \
 ../src/Stream.cpp \
 ../src/Wiring.cpp \
 ../src/WrapperSerial.cpp \
 ../src/diyxbee.cpp \
 ../src/dxl_hal.cpp \
-../src/dynamixel.cpp \
-../src/msound.cpp \
-../src/speak.cpp 
+../src/dynamixel.cpp 
 
 OBJS += \
 ./src/BioloidEX.o \
@@ -25,15 +22,12 @@ OBJS += \
 ./src/PWM.o \
 ./src/Print.o \
 ./src/RoboClaw.o \
-./src/SDRFunctions.o \
 ./src/Stream.o \
 ./src/Wiring.o \
 ./src/WrapperSerial.o \
 ./src/diyxbee.o \
 ./src/dxl_hal.o \
-./src/dynamixel.o \
-./src/msound.o \
-./src/speak.o 
+./src/dynamixel.o 
 
 CPP_DEPS += \
 ./src/BioloidEX.d \
@@ -41,15 +35,12 @@ CPP_DEPS += \
 ./src/PWM.d \
 ./src/Print.d \
 ./src/RoboClaw.d \
-./src/SDRFunctions.d \
 ./src/Stream.d \
 ./src/Wiring.d \
 ./src/WrapperSerial.d \
 ./src/diyxbee.d \
 ./src/dxl_hal.d \
-./src/dynamixel.d \
-./src/msound.d \
-./src/speak.d 
+./src/dynamixel.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

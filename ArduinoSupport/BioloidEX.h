@@ -21,9 +21,9 @@
 #define BioloidEx_h
 
 /* poses:
- *  PROGMEM prog_uint16_t name[ ] = {4,512,512,482,542}; // first number is # of servos
+ *   prog_uint16_t name[ ] = {4,512,512,482,542}; // first number is # of servos
  * sequences:
- *  PROGMEM transition_t name[] = {{NULL,count},{pose_name,1000},...} 
+ *   transition_t name[] = {{NULL,count},{pose_name,1000},...} 
  */
 
 #include <stdint.h>

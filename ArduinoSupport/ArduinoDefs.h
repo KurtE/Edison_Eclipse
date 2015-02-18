@@ -23,19 +23,8 @@
 #ifndef _ARDUINO_DEFS_
 #define _ARDUINO_DEFS_
 #include <stdint.h>
-#define PROGMEM
-#define pgm_read_byte(x)        (*((char *)x))
-//  #define pgm_read_word(x)        (*((short *)(x & 0xfffffffe)))
-#define pgm_read_word(x)        ( ((*((unsigned char *)x + 1)) << 8) + (*((unsigned char *)x)))
-#define pgm_read_byte_near(x)   (*((char *)x))
-#define pgm_read_byte_far(x)    (*((char *)x))
-//  #define pgm_read_word_near(x)   (*((short *)(x & 0xfffffffe))
-//  #define pgm_read_word_far(x)    (*((short *)(x & 0xfffffffe)))
-#define pgm_read_word_near(x)   ( ((*((unsigned char *)x + 1)) << 8) + (*((unsigned char *)x)))
-#define pgm_read_word_far(x)    ( ((*((unsigned char *)x + 1)) << 8) + (*((unsigned char *)x))))
-#define PSTR(x)  x
+
 #define F(x) x
-#define PGM_P   const char *
 
 // Define some data types?
 #define byte unsigned char
